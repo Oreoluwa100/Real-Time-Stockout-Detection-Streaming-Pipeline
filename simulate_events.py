@@ -4,7 +4,7 @@ load_dotenv()
 import random
 import time
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 import certifi
 from pymongo import MongoClient
 
@@ -58,18 +58,15 @@ def generate_order(product):
         "customer_id": f"CUST-{random.randint(1000, 9999)}",
         "channel": random.choice(CHANNELS),
         "order_status": order_status,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 
-def generate_inventory_update(product, quantity_sold, movement_type="reduction"):
+def generate_inventory_update(product, quantity_sold):
     """Generate an inventory update event after an order"""
     quantity_before = stock_levels[product["product_id"]]
-    if movement_type == "reduction":
-        quantity_after = max(0, quantity_before - quantity_sold)
-    else:
-        quantity_after = quantity_before + random.randint(20, 50)
-
+    quantity_after = max(0, quantity_before - quantity_sold)
+    
     # Update in-memory stock level
     stock_levels[product["product_id"]] = quantity_after
 
@@ -80,8 +77,8 @@ def generate_inventory_update(product, quantity_sold, movement_type="reduction")
         "category": product["category"],
         "quantity_before": quantity_before,
         "quantity_after": quantity_after,
-        "movement_type": movement_type,
-        "timestamp": datetime.utcnow().isoformat()
+        "movement_type": "reduction",
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 
@@ -90,7 +87,6 @@ def run_simulation():
     print("Starting Beauty by OA event simulation...")
     print(f"Initial stock levels: {stock_levels}")
 
-    last_restock_time = time.time()
     event_count = 0
 
     try:
@@ -106,19 +102,11 @@ def run_simulation():
 
             # Only update inventory if order was completed
             if order["order_status"] == "completed":
-                inventory = generate_inventory_update(product, order["quantity"], movement_type="reduction")
+                inventory = generate_inventory_update(product, order["quantity"])
                 inventory_collection.insert_one(inventory)
                 print(f"[INVENTORY] {inventory['product_name']} | Before: {inventory['quantity_before']} → After: {inventory['quantity_after']} | {inventory['movement_type']}")
             else:
                 print(f"[FAILED ORDER] {order['product_name']} — insufficient stock")
-
-            # Every 30 seconds trigger a restock on a random product
-            if time.time() - last_restock_time >= 30:
-                restock_product = random.choice(PRODUCTS)
-                restock = generate_inventory_update(restock_product, 0, movement_type="restock")
-                inventory_collection.insert_one(restock)
-                print(f"[RESTOCK] {restock['product_name']} | Before: {restock['quantity_before']} → After: {restock['quantity_after']}")
-                last_restock_time = time.time()
 
             # Wait random interval between 2 and 5 seconds before next event
             wait_time = random.uniform(2, 5)
