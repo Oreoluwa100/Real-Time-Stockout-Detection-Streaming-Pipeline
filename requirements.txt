@@ -3,3 +3,5 @@ certifi
 google-cloud-pubsub
 apache-beam[gcp]
 python-dotenv
+google-cloud-bigquery
+flask
