@@ -252,14 +252,14 @@ Pub/Sub provides at-least-once delivery, meaning duplicate messages are possible
 
 ## Screenshots
 
-### Pub/Sub Lag Alert — Firing
-![Pub/Sub lag alert firing](docs/screenshots/pubsub-lag-alert-firing.png)
+### Pub/Sub Lag Alert - Firing
+![Pub/Sub lag alert firing]([docs/screenshots/pubsub-lag-alert-firing.png](https://github.com/Oreoluwa100/Real-Time-Stockout-Detection-Streaming-Pipeline/blob/main/screenshots/pubsub-lag-alert-firing.png.jpeg))
 
 ### Pub/Sub Lag Alert — Recovered
-![Pub/Sub lag alert recovered](docs/screenshots/pubsub-lag-alert-recovered.png)
+![Pub/Sub lag alert recovered]([docs/screenshots/pubsub-lag-alert-recovered.png](https://github.com/Oreoluwa100/Real-Time-Stockout-Detection-Streaming-Pipeline/blob/main/screenshots/pubsub-lag-alert-recovered.png.jpeg))
 
 ### Stockout Alert Email
-![Stockout alert email](docs/screenshots/stockout-alert-email.png)
+![Stockout alert email]([docs/screenshots/stockout-alert-email.png](https://github.com/Oreoluwa100/Real-Time-Stockout-Detection-Streaming-Pipeline/blob/main/screenshots/stockout-alert-email.png.jpeg))
 
 ---
 
